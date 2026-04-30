@@ -1,0 +1,1197 @@
+<!DOCTYPE html><html lang="en"><head>
+
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>don't buy the jeans.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --paper: #f4f1ea;
+    --paper-2: #ebe7dd;
+    --rule: #0a0a0a;
+    --muted: #6b6b67;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+  body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-feature-settings: "ss01", "cv01";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+
+  /* ---- Top bar ---- */
+  .masthead {
+    border-bottom: 1.5px solid var(--ink);
+    padding: 14px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .masthead .lede { font-weight: 500; }
+  .masthead .meta { color: var(--muted); display: flex; gap: 20px; }
+  .masthead .meta span::before {
+    content: "● ";
+    color: var(--ink);
+    font-size: 8px;
+    vertical-align: middle;
+  }
+
+  /* ---- Main stage ---- */
+  main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 0;
+  }
+
+  .stage {
+    padding: 56px 28px 24px;
+    max-width: 1280px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* Title block */
+  .title-block {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+    padding-bottom: 28px;
+    border-bottom: 1.5px solid var(--ink);
+  }
+  h1 {
+    font-weight: 800;
+    font-size: clamp(44px, 9vw, 128px);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    margin: 0;
+    text-transform: lowercase;
+  }
+  h1 .period { color: var(--ink); }
+  h1 em {
+    font-style: italic;
+    font-weight: 400;
+  }
+  .title-meta {
+    font-size: 10.5px;
+    line-height: 1.5;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    max-width: 280px;
+    text-align: right;
+    padding-bottom: 10px;
+  }
+  .title-meta b { color: var(--ink); font-weight: 500; }
+
+  /* ---- Input row ---- */
+  .input-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: baseline;
+    gap: 0;
+    padding: 36px 0 20px;
+    border-bottom: 1.5px solid var(--ink);
+  }
+  .input-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding-right: 16px;
+    align-self: center;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .input-label b { color: var(--ink); font-weight: 500; }
+  .input-wrap {
+    display: flex;
+    align-items: baseline;
+    position: relative;
+  }
+  .dollar-sign {
+    font-size: clamp(48px, 10vw, 120px);
+    font-weight: 300;
+    color: var(--ink);
+    line-height: 1;
+    padding-right: 4px;
+    opacity: 0.55;
+  }
+  #amount {
+    border: none;
+    background: transparent;
+    outline: none;
+    font: inherit;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: clamp(48px, 10vw, 120px);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    width: 100%;
+    min-width: 0;
+    color: var(--ink);
+    caret-color: var(--ink);
+    padding: 0;
+  }
+  #amount::placeholder {
+    color: var(--ink);
+    opacity: 0.18;
+    font-weight: 300;
+  }
+  /* Hide spinners */
+  #amount::-webkit-outer-spin-button,
+  #amount::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  #amount[type=number] { -moz-appearance: textfield; }
+
+  .unit {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    align-self: center;
+    padding-left: 18px;
+    white-space: nowrap;
+  }
+
+  /* ---- Results grid ---- */
+  .results {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1.5px solid var(--ink);
+  }
+  .row {
+    display: contents;
+  }
+  .cell {
+    padding: 36px 24px 32px;
+    border-right: 1.5px solid var(--ink);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 260px;
+  }
+  .cell:last-child { border-right: none; }
+
+  .cell-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .cell-head .n {
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .cell-head .n::before {
+    content: "Fig. ";
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .year-label {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.3;
+    min-height: 2.6em;
+  }
+  .year-label .aside {
+    display: block;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--muted);
+    text-transform: none;
+    letter-spacing: 0.01em;
+    font-size: 11.5px;
+    margin-top: 6px;
+  }
+
+  .future-val {
+    font-size: clamp(28px, 4.2vw, 56px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    margin-top: 28px;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px;
+    font-variant-numeric: tabular-nums;
+    transition: opacity 160ms ease;
+  }
+  .future-val .cents {
+    font-size: 0.45em;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0;
+    padding-left: 2px;
+  }
+
+  .gain-line {
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .gain-line .delta {
+    color: var(--ink);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Empty state */
+  .future-val.empty {
+    color: var(--ink);
+    opacity: 0.15;
+    font-weight: 300;
+  }
+
+  /* Emphasized last cell */
+  .cell.alarming {
+    background: #c8170d;
+    color: var(--paper);
+  }
+  .cell.alarming .cell-head,
+  .cell.alarming .year-label,
+  .cell.alarming .gain-line { color: rgba(244,241,234,0.78); }
+  .cell.alarming .cell-head .n,
+  .cell.alarming .year-label,
+  .cell.alarming .future-val,
+  .cell.alarming .gain-line .delta { color: var(--paper); }
+  .cell.alarming .year-label .aside { color: rgba(244,241,234,0.6); }
+  .cell.alarming .future-val.empty { color: var(--paper); opacity: 0.25; }
+
+  /* ---- Footnote strip ---- */
+  .footnote-strip {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr 0.8fr;
+    border-bottom: 1.5px solid var(--ink);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .footnote-strip > div {
+    padding: 14px 24px;
+    border-right: 1.5px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+  }
+  .footnote-strip > div:last-child { border-right: none; }
+  .footnote-strip .k { color: var(--muted); }
+  .footnote-strip .v { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+  /* ---- Editorial block ---- */
+  .editorial {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 0;
+    margin-top: 0;
+  }
+  .editorial > div {
+    padding: 40px 28px;
+  }
+  .editorial .kicker {
+    border-right: 1.5px solid var(--ink);
+  }
+  .kicker-title {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 20px;
+    font-weight: 500;
+  }
+  .kicker-body {
+    font-size: 15px;
+    line-height: 1.5;
+    margin: 0;
+    font-weight: 400;
+    max-width: 38ch;
+    text-wrap: pretty;
+  }
+  .kicker-body em { font-style: italic; color: var(--muted); }
+
+  .receipt {
+    font-size: 12px;
+    line-height: 1.7;
+    font-variant-numeric: tabular-nums;
+  }
+  .receipt-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px dashed var(--ink);
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 10.5px;
+    color: var(--muted);
+  }
+  .receipt-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: baseline;
+    gap: 14px;
+    padding: 3px 0;
+  }
+  .receipt-row .dots {
+    border-bottom: 1.5px dotted #aeaaa0;
+    transform: translateY(-4px);
+    min-width: 40px;
+  }
+  .receipt-row .yrs {
+    color: var(--muted);
+    text-align: right;
+    min-width: 56px;
+  }
+  .receipt-row .amt {
+    font-weight: 500;
+    text-align: right;
+    min-width: 120px;
+  }
+  .receipt-row.total {
+    border-top: 1px dashed var(--ink);
+    margin-top: 8px;
+    padding-top: 10px;
+    font-weight: 700;
+  }
+
+  /* ---- CTA strip ---- */
+  .cta-strip {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: stretch;
+    border-bottom: 1.5px solid var(--ink);
+  }
+  .cta-copy {
+    padding: 22px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    justify-content: center;
+  }
+  .cta-copy .eyebrow {
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .cta-copy .line {
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+    max-width: 62ch;
+  }
+  .cta-copy .line em { font-style: italic; color: var(--muted); }
+  .cta-copy .line b { font-weight: 700; }
+
+  .cta-btn {
+    border: none;
+    border-left: 1.5px solid var(--ink);
+    background: #0d8a3f;
+    color: #ffffff;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0 36px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: background 120ms ease, color 120ms ease;
+    min-height: 84px;
+    white-space: nowrap;
+  }
+  .cta-btn:hover { background: #0a6d31; color: #ffffff; }
+  .cta-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: -6px; }
+  .cta-btn:disabled {
+    background: var(--paper-2);
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+  .cta-btn:disabled:hover { background: var(--paper-2); color: var(--muted); }
+  .cta-btn .arrow {
+    display: inline-block;
+    transition: transform 160ms ease;
+    font-weight: 400;
+  }
+  .cta-btn:hover .arrow { transform: translateX(4px); }
+  .cta-btn .amt {
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-transform: none;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.7;
+    padding-left: 4px;
+    font-size: 12px;
+  }
+
+  /* ---- Modal sheet ---- */
+  .sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 24px;
+    animation: fadeIn 160ms ease;
+  }
+  .sheet-backdrop.open { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes sheetIn {
+    from { transform: translateY(12px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .sheet {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    width: 100%;
+    max-width: 520px;
+    animation: sheetIn 200ms ease;
+    box-shadow: 12px 12px 0 var(--ink);
+  }
+  .sheet-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1.5px solid var(--ink);
+    padding: 14px 22px;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .sheet-head .close {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    color: var(--ink);
+    padding: 0 4px;
+    line-height: 1;
+  }
+  .sheet-body { padding: 28px 22px 8px; }
+  .sheet-title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin: 0 0 12px;
+  }
+  .sheet-title em { font-style: italic; font-weight: 400; }
+  .sheet-sub {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--muted);
+    margin: 0 0 22px;
+    text-wrap: pretty;
+  }
+
+  .brokerage-picker {
+    display: flex;
+    flex-direction: column;
+    border: 1.5px solid var(--ink);
+    margin-bottom: 18px;
+  }
+  .brokerage-opt {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--ink);
+    cursor: pointer;
+    background: var(--paper);
+    transition: background 120ms ease;
+    font-size: 13px;
+  }
+  .brokerage-opt:last-child { border-bottom: none; }
+  .brokerage-opt:hover { background: var(--paper-2); }
+  .brokerage-opt input { position: absolute; opacity: 0; pointer-events: none; }
+  .brokerage-opt .radio {
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid var(--ink);
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .brokerage-opt input:checked + .radio::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    background: var(--ink);
+    border-radius: 50%;
+  }
+  .brokerage-opt .name { font-weight: 500; letter-spacing: -0.01em; }
+  .brokerage-opt .tag {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .sheet-summary {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px 16px;
+    font-size: 12px;
+    line-height: 1.6;
+    font-variant-numeric: tabular-nums;
+    border-top: 1px dashed var(--ink);
+    padding-top: 14px;
+    margin-bottom: 16px;
+  }
+  .sheet-summary .k { color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-size: 10.5px; align-self: center; }
+  .sheet-summary .v { font-weight: 500; text-align: right; }
+  .sheet-summary .v.big { font-size: 14px; font-weight: 700; }
+
+  .sheet-foot {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1.5px solid var(--ink);
+  }
+  .sheet-btn {
+    background: var(--paper);
+    border: none;
+    border-right: 1.5px solid var(--ink);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 18px 16px;
+    cursor: pointer;
+    color: var(--ink);
+    transition: background 120ms ease, color 120ms ease;
+  }
+  .sheet-btn:last-child { border-right: none; background: var(--ink); color: var(--paper); }
+  .sheet-btn:hover { background: var(--paper-2); }
+  .sheet-btn:last-child:hover { background: var(--paper); color: var(--ink); }
+  .sheet-btn:disabled { color: var(--muted); cursor: not-allowed; background: var(--paper-2); }
+  .sheet-btn:last-child:disabled { background: var(--paper-2); color: var(--muted); }
+
+  .sheet-disclaimer {
+    padding: 12px 22px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-top: 1.5px solid var(--ink);
+    line-height: 1.5;
+  }
+
+  /* Confirmation state */
+  .sheet.confirmed .sheet-body { text-align: center; padding: 44px 22px 28px; }
+  .sheet.confirmed .stamp {
+    display: inline-block;
+    border: 2px solid var(--ink);
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transform: rotate(-3deg);
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 700px) {
+    .cta-strip { grid-template-columns: 1fr; }
+    .cta-btn {
+      border-left: none;
+      border-top: 1.5px solid var(--ink);
+      justify-content: center;
+      padding: 22px;
+      min-height: 0;
+    }
+  }
+
+  /* ---- Footer ---- */
+  footer {
+    border-top: 1.5px solid var(--ink);
+    padding: 14px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: auto;
+  }
+  footer b { color: var(--ink); font-weight: 500; }
+  footer a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--ink); }
+
+  /* ---- Flicker on update (subtle) ---- */
+  @keyframes blink {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.55; }
+  }
+  .updated .future-val:not(.empty) { animation: blink 220ms ease; }
+
+  /* Marquee under hero when empty */
+  .ghost-strip {
+    padding: 10px 28px;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1.5px solid var(--ink);
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .ghost-strip .marq {
+    display: inline-block;
+    animation: marq 40s linear infinite;
+    padding-right: 40px;
+  }
+  @keyframes marq { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 900px) {
+    .title-block { grid-template-columns: 1fr; }
+    .title-meta { text-align: left; max-width: none; padding-bottom: 0; }
+    .results { grid-template-columns: repeat(2, 1fr); }
+    .cell:nth-child(2) { border-right: none; }
+    .cell:nth-child(1), .cell:nth-child(2) { border-bottom: 1.5px solid var(--ink); }
+    .footnote-strip { grid-template-columns: 1fr 1fr; }
+    .footnote-strip > div:nth-child(2) { border-right: none; }
+    .footnote-strip > div:nth-child(1),
+    .footnote-strip > div:nth-child(2) { border-bottom: 1.5px solid var(--ink); }
+    .editorial { grid-template-columns: 1fr; }
+    .editorial .kicker { border-right: none; border-bottom: 1.5px solid var(--ink); }
+    .input-row { grid-template-columns: 1fr; }
+    .input-label { padding-bottom: 14px; padding-right: 0; }
+    .unit { padding-left: 0; padding-top: 14px; }
+  }
+  @media (max-width: 560px) {
+    .masthead { flex-direction: column; gap: 6px; }
+    .masthead .meta { gap: 14px; }
+    .results { grid-template-columns: 1fr; }
+    .cell { border-right: none; border-bottom: 1.5px solid var(--ink); min-height: 220px; }
+    .cell:last-child { border-bottom: none; }
+    .footnote-strip { grid-template-columns: 1fr; }
+    .footnote-strip > div { border-right: none; border-bottom: 1.5px solid var(--ink); }
+    .footnote-strip > div:last-child { border-bottom: none; }
+    .stage { padding: 32px 20px 16px; }
+    .cell { padding: 26px 20px 24px; }
+  }
+</style>
+</head>
+<body data-cc-id="cc-1" style="cursor: crosshair; background-color: rgb(248, 248, 248);">
+
+<header class="masthead">
+  <div class="lede">DON'T BUY THE JEANS&nbsp;&nbsp;/&nbsp;&nbsp;A Spending Deterrent</div>
+  <div class="meta">
+    <span>Vol. I, No. 07</span>
+    <span>Rate: 7.00% p.a. real</span>
+    <span id="today">APR 20, 2026</span>
+  </div>
+</header>
+
+<main>
+  <section class="stage">
+
+    <div class="title-block">
+      <h1>don't buy<br>the&nbsp;<em>jeans</em><span class="period">.</span></h1>
+      <div class="title-meta">
+        Enter a number. Witness<br>what it could've become.<br>
+        <b>No sign-ups. No charts. No mercy.</b>
+      </div>
+    </div>
+
+    <div class="input-row" id="inputRow">
+      <div class="input-label">The thing costs&nbsp;&nbsp;<b>→</b></div>
+      <div class="input-wrap">
+        <span class="dollar-sign">$</span>
+        <input id="amount" type="text" inputmode="decimal" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="128" aria-label="Cost in dollars">
+      </div>
+      <div class="unit">US Dollars</div>
+    </div>
+
+    <div class="results updated" id="results">
+      <div class="cell" data-years="1">
+        <div>
+          <div class="cell-head"><span>Near term</span><span class="n">01</span></div>
+          <div class="year-label">In 1 year.<span class="aside">Barely worth mentioning.</span></div>
+        </div>
+        <div>
+          <div class="future-val" data-fv="">$579<span class="cents">.94</span></div>
+          <div class="gain-line"><span>Gained</span><span class="delta" data-delta="">+$37.94</span></div>
+        </div>
+      </div>
+      <div class="cell" data-years="5">
+        <div>
+          <div class="cell-head"><span>Short haul</span><span class="n">02</span></div>
+          <div class="year-label">In 5 years.<span class="aside">One economic cycle, give or take.</span></div>
+        </div>
+        <div>
+          <div class="future-val" data-fv="">$760<span class="cents">.18</span></div>
+          <div class="gain-line"><span>Gained</span><span class="delta" data-delta="">+$218.18</span></div>
+        </div>
+      </div>
+      <div class="cell" data-years="10">
+        <div>
+          <div class="cell-head"><span>Mid haul</span><span class="n">03</span></div>
+          <div class="year-label">In 10 years.<span class="aside">Roughly a doubling. Easy math.</span></div>
+        </div>
+        <div>
+          <div class="future-val" data-fv="">$1,066<span class="cents">.20</span></div>
+          <div class="gain-line"><span>Gained</span><span class="delta" data-delta="">+$524.20</span></div>
+        </div>
+      </div>
+      <div class="cell alarming" data-years="30">
+        <div>
+          <div class="cell-head"><span>Retirement</span><span class="n">04</span></div>
+          <div class="year-label">In 30 years, just saying.<span class="aside">This is the one you should be looking at.</span></div>
+        </div>
+        <div>
+          <div class="future-val" data-fv="">$4,125<span class="cents">.84</span></div>
+          <div class="gain-line"><span>Forgone</span><span class="delta" data-delta="">+$3,583.84</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footnote-strip">
+      <div><span class="k">Assumption</span><span class="v">7.00% real</span></div>
+      <div><span class="k">Source</span><span class="v">S&amp;P 500, ~1928–2024</span></div>
+      <div><span class="k">Compounding</span><span class="v">Annual</span></div>
+      <div><span class="k">Fees</span><span class="v">0.00%</span></div>
+    </div>
+
+    <div class="cta-strip">
+      <div class="cta-copy">
+        <div class="eyebrow">Put the money where your mouth is</div>
+        <div class="line">Skip the jeans. Send this amount to your brokerage instead. <em>You will thank yourself in 30 years. Your 30-year-old self will thank nobody.</em></div>
+      </div>
+      <button id="sendBtn" class="cta-btn" type="button">
+        <span>Send to brokerage</span>
+        <span class="amt" id="sendAmt">$542.00</span>
+        <span class="arrow">→</span>
+      </button>
+    </div>
+
+    <div class="editorial">
+      <div class="kicker">
+        <p class="kicker-title">A Note from the Editor</p>
+        <p class="kicker-body">
+          The jeans are fine. The jeans have always been fine.
+          What is not fine is the thirty-year version of you,
+          who would like a word. <em>Compounding doesn't care
+          about your cart.</em>
+        </p>
+      </div>
+      <div class="receipt" aria-live="polite">
+        <div class="receipt-head"><span>Itemized&nbsp;·&nbsp;Opportunity Cost</span><span id="receiptStamp">PRICED · APR 20, 2026</span></div>
+        <div class="receipt-row"><span>Principal</span><span class="yrs">now</span><span class="amt" id="rPrincipal">$542.00</span></div>
+        <div class="receipt-row"><span>+ Growth</span><span class="yrs">1 yr</span><span class="amt" id="r1">$579.94</span></div>
+        <div class="receipt-row"><span>+ Growth</span><span class="yrs">5 yr</span><span class="amt" id="r5">$760.18</span></div>
+        <div class="receipt-row"><span>+ Growth</span><span class="yrs">10 yr</span><span class="amt" id="r10">$1,066.20</span></div>
+        <div class="receipt-row total"><span>Future you, 30 yr</span><span class="yrs">2056</span><span class="amt" id="r30">$4,125.84</span></div>
+      </div>
+    </div>
+
+    <div class="ghost-strip" aria-hidden="true">
+      <span class="marq">
+        DO NOT BUY THE JEANS &nbsp;·&nbsp; DO NOT BUY THE HEADPHONES &nbsp;·&nbsp; DO NOT BUY THE THIRD MONITOR &nbsp;·&nbsp; DO NOT BUY THE COUCH &nbsp;·&nbsp; DO NOT BUY THE BIKE &nbsp;·&nbsp; DO NOT BUY THE SECOND PAIR OF JEANS &nbsp;·&nbsp;
+        DO NOT BUY THE JEANS &nbsp;·&nbsp; DO NOT BUY THE HEADPHONES &nbsp;·&nbsp; DO NOT BUY THE THIRD MONITOR &nbsp;·&nbsp; DO NOT BUY THE COUCH &nbsp;·&nbsp; DO NOT BUY THE BIKE &nbsp;·&nbsp; DO NOT BUY THE SECOND PAIR OF JEANS &nbsp;·&nbsp;
+      </span>
+    </div>
+
+  </section>
+</main>
+
+<!-- Connect brokerage sheet -->
+<div class="sheet-backdrop" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheet" id="sheetInner">
+    <div class="sheet-head">
+      <span>Connect · Step <span id="stepNum">1</span>/2</span>
+      <button class="close" id="sheetClose" aria-label="Close">✕</button>
+    </div>
+
+    <!-- Step 1: pick brokerage -->
+    <div id="step1">
+      <div class="sheet-body">
+        <h2 class="sheet-title" id="sheetTitle">Send it to <em>someone who'll grow it.</em></h2>
+        <p class="sheet-sub">Pick a brokerage. We'll hand the amount off via secure redirect. We never see your account. We barely even want to.</p>
+
+        <div class="brokerage-picker" id="picker">
+          <label class="brokerage-opt">
+            <input type="radio" name="broker" value="A Brokerage" checked="">
+            <span class="radio"></span>
+            <span class="name">A Brokerage</span>
+            <span class="tag">Recommended</span>
+          </label>
+          <label class="brokerage-opt">
+            <input type="radio" name="broker" value="Another Brokerage">
+            <span class="radio"></span>
+            <span class="name">Another Brokerage</span>
+            <span class="tag">Low fee</span>
+          </label>
+          <label class="brokerage-opt">
+            <input type="radio" name="broker" value="Your Existing Account">
+            <span class="radio"></span>
+            <span class="name">Your existing account</span>
+            <span class="tag">Manual</span>
+          </label>
+          <label class="brokerage-opt">
+            <input type="radio" name="broker" value="A Coffee Can Under the Bed">
+            <span class="radio"></span>
+            <span class="name">A coffee can under the bed</span>
+            <span class="tag">Don't</span>
+          </label>
+        </div>
+
+        <div class="sheet-summary">
+          <span class="k">Transferring</span><span class="v big" id="sumAmt">$0.00</span>
+          <span class="k">Destination</span><span class="v" id="sumBroker">A Brokerage</span>
+          <span class="k">Projected · 30 yr</span><span class="v" id="sumFuture">$0.00</span>
+        </div>
+      </div>
+      <div class="sheet-foot">
+        <button class="sheet-btn" id="cancelBtn" type="button">Cancel · buy jeans</button>
+        <button class="sheet-btn" id="continueBtn" type="button">Continue →</button>
+      </div>
+      <div class="sheet-disclaimer">
+        Demo interface · No funds are actually moved · This site is not a broker-dealer · Not financial advice · Still not your friend
+      </div>
+    </div>
+
+    <!-- Step 2: confirmation -->
+    <div id="step2" style="display:none">
+      <div class="sheet-body confirmed-body">
+        <div style="text-align:center;">
+          <div class="stamp" id="stamp">Handoff prepared</div>
+        </div>
+        <h2 class="sheet-title" style="text-align:center;"><em>Ready to transfer.</em></h2>
+        <p class="sheet-sub" style="text-align:center;">We'd redirect you to <b id="confBroker">A Brokerage</b> to authorize a deposit of <b id="confAmt">$0.00</b>. In this prototype, that's all theater — but the pride is real.</p>
+
+        <div class="sheet-summary">
+          <span class="k">Amount</span><span class="v big" id="confAmt2">$0.00</span>
+          <span class="k">Destination</span><span class="v" id="confBroker2">A Brokerage</span>
+          <span class="k">Future you · 30 yr</span><span class="v" id="confFuture">$0.00</span>
+          <span class="k">Reference</span><span class="v" id="confRef">—</span>
+        </div>
+      </div>
+      <div class="sheet-foot">
+        <button class="sheet-btn" id="backBtn" type="button">← Back</button>
+        <button class="sheet-btn" id="confirmBtn" type="button">Authorize transfer</button>
+      </div>
+      <div class="sheet-disclaimer">
+        By clicking authorize you acknowledge this is a demo · No real account is contacted · Go set up a real automation after you close this
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div>© <span id="yr">2026</span> · Not financial advice · Also not a friend</div>
+  <div>Press <b>esc</b> to reset · 7% real return assumed</div>
+</footer>
+
+<script>
+  // ---- setup ----
+  const RATE = 0.07;
+  const HORIZONS = [1, 5, 10, 30];
+
+  const input = document.getElementById('amount');
+  const cells = [...document.querySelectorAll('.cell[data-years]')];
+  const resultsEl = document.getElementById('results');
+  const stamp = document.getElementById('receiptStamp');
+  const receiptIds = { principal: 'rPrincipal', 1: 'r1', 5: 'r5', 10: 'r10', 30: 'r30' };
+
+  // today + year
+  const now = new Date();
+  const fmtDate = now.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase();
+  document.getElementById('today').textContent = fmtDate;
+  document.getElementById('yr').textContent = now.getFullYear();
+
+  // Formatters
+  const usd = (n) => {
+    if (!isFinite(n)) return '$—';
+    const abs = Math.abs(n);
+    // split into integer and cents to render cents smaller
+    const sign = n < 0 ? '-' : '';
+    return sign + '$' + abs.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+  const usdSplit = (n) => {
+    if (!isFinite(n)) return { whole: '$—', cents: '' };
+    const rounded = Math.round(n * 100) / 100;
+    const sign = rounded < 0 ? '-' : '';
+    const abs = Math.abs(rounded);
+    const whole = Math.trunc(abs);
+    const cents = Math.round((abs - whole) * 100).toString().padStart(2, '0');
+    return {
+      whole: sign + '$' + whole.toLocaleString('en-US'),
+      cents: '.' + cents
+    };
+  };
+
+  function parseAmount(raw) {
+    if (!raw) return NaN;
+    // strip commas, $, spaces
+    const cleaned = String(raw).replace(/[^0-9.\-]/g, '');
+    if (cleaned === '' || cleaned === '-' || cleaned === '.') return NaN;
+    const n = parseFloat(cleaned);
+    return isFinite(n) ? n : NaN;
+  }
+
+  function futureValue(p, years) {
+    return p * Math.pow(1 + RATE, years);
+  }
+
+  function render(principal) {
+    const valid = isFinite(principal) && principal > 0;
+
+    // results cells
+    cells.forEach((cell) => {
+      const years = parseInt(cell.dataset.years, 10);
+      const fvEl = cell.querySelector('[data-fv]');
+      const deltaEl = cell.querySelector('[data-delta]');
+      if (!valid) {
+        fvEl.innerHTML = '$—';
+        fvEl.classList.add('empty');
+        deltaEl.textContent = '—';
+        return;
+      }
+      const fv = futureValue(principal, years);
+      const gain = fv - principal;
+      const { whole, cents } = usdSplit(fv);
+      fvEl.innerHTML = whole + '<span class="cents">' + cents + '</span>';
+      fvEl.classList.remove('empty');
+      deltaEl.textContent = '+' + usd(gain);
+    });
+
+    // receipt
+    const rp = document.getElementById(receiptIds.principal);
+    rp.textContent = valid ? usd(principal) : '$0.00';
+    [1, 5, 10, 30].forEach((y) => {
+      const el = document.getElementById(receiptIds[y]);
+      if (!valid) { el.textContent = '$0.00'; return; }
+      el.textContent = usd(futureValue(principal, y));
+    });
+    stamp.textContent = valid ? 'PRICED · ' + fmtDate : 'NOT YET PRICED';
+
+    // blink
+    resultsEl.classList.remove('updated');
+    // force reflow to restart animation
+    void resultsEl.offsetWidth;
+    if (valid) resultsEl.classList.add('updated');
+
+    // CTA button state
+    const sendBtn = document.getElementById('sendBtn');
+    const sendAmt = document.getElementById('sendAmt');
+    if (valid) {
+      sendBtn.disabled = false;
+      sendAmt.textContent = usd(principal);
+    } else {
+      sendBtn.disabled = true;
+      sendAmt.textContent = '— enter amount —';
+    }
+  }
+
+  // ---- input handling: keep commas as user types ----
+  function formatInputValue(el) {
+    const raw = el.value;
+    // Preserve caret position roughly
+    const caret = el.selectionStart;
+    const before = raw.slice(0, caret).replace(/[^0-9.]/g, '').length;
+
+    // Clean and parse
+    let cleaned = raw.replace(/[^0-9.]/g, '');
+    // only one decimal point
+    const firstDot = cleaned.indexOf('.');
+    if (firstDot !== -1) {
+      cleaned = cleaned.slice(0, firstDot + 1) + cleaned.slice(firstDot + 1).replace(/\./g, '');
+    }
+    // limit to 2 decimals
+    if (firstDot !== -1) {
+      const [ip, dp] = cleaned.split('.');
+      cleaned = ip + '.' + (dp || '').slice(0, 2);
+    }
+    // drop leading zeros on integer part
+    let [intPart, decPart] = cleaned.split('.');
+    if (intPart && intPart.length > 1) intPart = intPart.replace(/^0+/, '') || '0';
+
+    let formattedInt = '';
+    if (intPart !== undefined && intPart !== '') {
+      formattedInt = Number(intPart).toLocaleString('en-US');
+    }
+
+    let formatted = formattedInt;
+    if (cleaned.includes('.')) formatted += '.' + (decPart || '');
+
+    el.value = formatted;
+
+    // restore caret (approximate: count digits/dots before caret)
+    let digitsSeen = 0;
+    let newCaret = formatted.length;
+    for (let i = 0; i < formatted.length; i++) {
+      if (/[0-9.]/.test(formatted[i])) digitsSeen++;
+      if (digitsSeen >= before) { newCaret = i + 1; break; }
+    }
+    try { el.setSelectionRange(newCaret, newCaret); } catch (e) {}
+  }
+
+  input.addEventListener('input', () => {
+    formatInputValue(input);
+    const n = parseAmount(input.value);
+    render(n);
+  });
+
+  // Escape resets
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      input.value = '';
+      render(NaN);
+      input.focus();
+    }
+  });
+
+  // Autofocus
+  window.addEventListener('load', () => {
+    input.focus();
+    render(NaN);
+  });
+
+  // ---- Sheet / brokerage connect flow ----
+  const sheet = document.getElementById('sheet');
+  const sheetInner = document.getElementById('sheetInner');
+  const sendBtn = document.getElementById('sendBtn');
+  const sheetClose = document.getElementById('sheetClose');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const continueBtn = document.getElementById('continueBtn');
+  const backBtn = document.getElementById('backBtn');
+  const confirmBtn = document.getElementById('confirmBtn');
+  const step1 = document.getElementById('step1');
+  const step2 = document.getElementById('step2');
+  const stepNum = document.getElementById('stepNum');
+
+  function currentBroker() {
+    const picked = document.querySelector('input[name="broker"]:checked');
+    return picked ? picked.value : 'A Brokerage';
+  }
+
+  function updateSheetSummary() {
+    const n = parseAmount(input.value);
+    const valid = isFinite(n) && n > 0;
+    const amt = valid ? usd(n) : '$0.00';
+    const fut = valid ? usd(futureValue(n, 30)) : '$0.00';
+    const broker = currentBroker();
+
+    document.getElementById('sumAmt').textContent = amt;
+    document.getElementById('sumBroker').textContent = broker;
+    document.getElementById('sumFuture').textContent = fut;
+
+    document.getElementById('confAmt').textContent = amt;
+    document.getElementById('confAmt2').textContent = amt;
+    document.getElementById('confBroker').textContent = broker;
+    document.getElementById('confBroker2').textContent = broker;
+    document.getElementById('confFuture').textContent = fut;
+  }
+
+  function openSheet() {
+    if (sendBtn.disabled) return;
+    updateSheetSummary();
+    showStep(1);
+    sheet.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => continueBtn && continueBtn.focus(), 50);
+  }
+  function closeSheet() {
+    sheet.classList.remove('open');
+    document.body.style.overflow = '';
+    sheetInner.classList.remove('confirmed');
+    showStep(1);
+  }
+  function showStep(n) {
+    stepNum.textContent = n;
+    step1.style.display = n === 1 ? '' : 'none';
+    step2.style.display = n === 2 ? '' : 'none';
+  }
+
+  sendBtn.addEventListener('click', openSheet);
+  sheetClose.addEventListener('click', closeSheet);
+  cancelBtn.addEventListener('click', closeSheet);
+  sheet.addEventListener('click', (e) => { if (e.target === sheet) closeSheet(); });
+
+  document.querySelectorAll('input[name="broker"]').forEach(r => {
+    r.addEventListener('change', updateSheetSummary);
+  });
+
+  continueBtn.addEventListener('click', () => {
+    updateSheetSummary();
+    // generate pseudo ref
+    const ref = 'DBJ-' + Math.random().toString(36).slice(2, 8).toUpperCase() + '-' + Date.now().toString(36).slice(-4).toUpperCase();
+    document.getElementById('confRef').textContent = ref;
+    showStep(2);
+    setTimeout(() => confirmBtn && confirmBtn.focus(), 50);
+  });
+
+  backBtn.addEventListener('click', () => showStep(1));
+
+  confirmBtn.addEventListener('click', () => {
+    // Fake success
+    const stampEl = document.querySelector('#step2 .stamp');
+    confirmBtn.textContent = 'Authorizing…';
+    confirmBtn.disabled = true;
+    backBtn.disabled = true;
+    setTimeout(() => {
+      stampEl.textContent = 'Transfer queued ✓';
+      confirmBtn.textContent = 'Done · close';
+      confirmBtn.disabled = false;
+      confirmBtn.onclick = () => {
+        closeSheet();
+        confirmBtn.textContent = 'Authorize transfer';
+        confirmBtn.onclick = null;
+        confirmBtn.disabled = false;
+        backBtn.disabled = false;
+      };
+    }, 900);
+  });
+
+  // Esc closes sheet first, otherwise resets
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && sheet.classList.contains('open')) {
+      e.stopImmediatePropagation();
+      closeSheet();
+    }
+  }, true);
+</script>
+
+
+
+</body></html>

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>don't buy the jeans.</title>
+  <link rel="stylesheet" href="popup.css?v=4" />
+</head>
+<body>
+
+<header class="masthead">
+  <div class="lede">DON'T BUY THE JEANS</div>
+  <div class="meta">
+    <span id="today">—</span>
+    <span>7.00% p.a.</span>
+  </div>
+</header>
+
+<main>
+
+  <h1 class="wordmark">don't<br/>buy the<br/><em>jeans</em><span class="period">.</span></h1>
+
+  <div class="context" id="contextRow" hidden>
+    <span class="ctx-dot"></span>
+    <span class="ctx-text">You are on <b id="ctxHost">a shopping site</b>. We noticed.</span>
+  </div>
+
+  <section class="input-row">
+    <div class="input-label">The thing costs&nbsp;<b>→</b></div>
+    <div class="input-wrap">
+      <span class="dollar-sign">$</span>
+      <input id="amount" type="text" inputmode="decimal" autocomplete="off"
+             spellcheck="false" placeholder="128" aria-label="Cost in dollars" />
+    </div>
+  </section>
+
+  <div class="strategy-toggle" role="tablist" aria-label="Strategy">
+    <button class="strat-tab" data-strat="hysa" role="tab">
+      <span class="strat-name">HYSA</span>
+      <span class="strat-rate">4%</span>
+    </button>
+    <button class="strat-tab active" data-strat="sp500" role="tab" aria-selected="true">
+      <span class="strat-name">S&amp;P 500</span>
+      <span class="strat-rate">7%</span>
+    </button>
+    <button class="strat-tab" data-strat="nasdaq" role="tab">
+      <span class="strat-name">Nasdaq 100</span>
+      <span class="strat-rate">10%</span>
+    </button>
+    <button class="strat-tab" data-strat="growth" role="tab">
+      <span class="strat-name">Growth</span>
+      <span class="strat-rate">15%</span>
+    </button>
+  </div>
+  <div class="strat-caption" id="stratCaption">Boring. Reliable. Beats inflation. Probably what you should pick.</div>
+
+  <section class="results" id="results">
+    <div class="row" data-years="1">
+      <div class="yr-label">
+        <span class="n">01</span>
+        <span class="yr">In 1 year.</span>
+        <span class="aside">Barely worth mentioning.</span>
+      </div>
+      <div class="fv-block">
+        <div class="fv empty" data-fv>$—</div>
+        <div class="fv-strat" data-fv-strat>S&amp;P 500 · 7%</div>
+      </div>
+    </div>
+    <div class="row" data-years="5">
+      <div class="yr-label">
+        <span class="n">02</span>
+        <span class="yr">In 5 years.</span>
+        <span class="aside">One economic cycle.</span>
+      </div>
+      <div class="fv-block">
+        <div class="fv empty" data-fv>$—</div>
+        <div class="fv-strat" data-fv-strat>S&amp;P 500 · 7%</div>
+      </div>
+    </div>
+    <div class="row" data-years="10">
+      <div class="yr-label">
+        <span class="n">03</span>
+        <span class="yr">In 10 years.</span>
+        <span class="aside">Roughly a doubling.</span>
+      </div>
+      <div class="fv-block">
+        <div class="fv empty" data-fv>$—</div>
+        <div class="fv-strat" data-fv-strat>S&amp;P 500 · 7%</div>
+      </div>
+    </div>
+    <div class="row alarming" data-years="30">
+      <div class="yr-label">
+        <span class="n">04</span>
+        <span class="yr">In 30 years, just saying.</span>
+        <span class="aside">This is the one.</span>
+      </div>
+      <div class="fv-block">
+        <div class="fv empty" data-fv>$—</div>
+        <div class="fv-strat" data-fv-strat>S&amp;P 500 · 7%</div>
+      </div>
+    </div>
+  </section>
+
+  <button id="rhBtn" class="rh-btn" type="button" disabled>
+    <span class="rh-main">
+      <span class="rh-label">Send to Robinhood</span>
+      <span class="rh-amt" id="rhAmt">— enter amount —</span>
+    </span>
+    <span class="rh-arrow">→</span>
+  </button>
+  <div class="rh-note" id="rhNote">Opens Robinhood in a new tab. Amount copied to clipboard — paste it into the deposit screen.</div>
+
+  <footer class="foot">
+    <span>S&amp;P 500 real return · 7%</span>
+    <span><b>esc</b> resets</span>
+  </footer>
+
+</main>
+
+<script src="popup.js?v=6"></script>
+</body>
+</html>

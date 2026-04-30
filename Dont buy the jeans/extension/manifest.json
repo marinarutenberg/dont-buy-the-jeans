@@ -1,0 +1,47 @@
+{
+  "manifest_version": 1.0,
+  "name": "don't buy the jeans",
+  "short_name": "DBJ",
+  "version": "1.0.0",
+  "description": "A spending deterrent. Enter a number. See what it could become. Decide accordingly.",
+  "action": {
+    "default_title": "don't buy the jeans",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["tabs", "storage"],
+  "host_permissions": [
+    "*://*.amazon.com/*",
+    "*://*.zara.com/*",
+    "*://*.asos.com/*",
+    "*://*.nike.com/*",
+    "*://*.uniqlo.com/*",
+    "*://*.hm.com/*",
+    "*://*.ebay.com/*",
+    "*://*.etsy.com/*",
+    "*://*.shopify.com/*",
+    "*://*.target.com/*",
+    "*://*.walmart.com/*",
+    "*://*.bestbuy.com/*",
+    "*://*.nordstrom.com/*",
+    "*://*.farfetch.com/*",
+    "*://*.ssense.com/*",
+    "*://*.revolve.com/*",
+    "*://*.aritzia.com/*",
+    "*://*.sephora.com/*"
+  ]
+}

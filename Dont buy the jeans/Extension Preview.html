@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>don't buy the jeans — extension preview</title>
+<style>
+  /* ===== page chrome ===== */
+  html, body { margin: 0; padding: 0; background: #2a2a27; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: #ebe7dd; min-height: 100vh; }
+  .wrap { padding: 48px 32px; display: grid; grid-template-columns: auto 1fr; gap: 56px; align-items: start; max-width: 1200px; margin: 0 auto; }
+  @media (max-width: 840px) { .wrap { grid-template-columns: 1fr; gap: 32px; } }
+  .frame-col { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .browser-bar {
+    width: 360px;
+    background: #1f1f1d;
+    border: 1px solid #000;
+    border-bottom: none;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 8px 8px 0 0;
+    font-size: 11px;
+    color: #aeaaa0;
+  }
+  .dots { display: flex; gap: 5px; }
+  .dots i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .dots i:nth-child(1) { background: #ff5f57; }
+  .dots i:nth-child(2) { background: #febc2e; }
+  .dots i:nth-child(3) { background: #28c840; }
+  .browser-bar .title { margin-left: 8px; letter-spacing: 0.1em; text-transform: uppercase; font-size: 9.5px; }
+
+  .popup-shell {
+    width: 360px;
+    border: 1px solid #000;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.55), 0 6px 18px rgba(0,0,0,0.4);
+    background: #f4f1ea;
+    color: #0a0a0a;
+  }
+  .caption { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #8a857a; }
+
+  /* ===== popup styles (scoped to .popup-shell) ===== */
+  .popup-shell, .popup-shell * { box-sizing: border-box; }
+  .popup-shell {
+    --ink: #0a0a0a;
+    --paper: #f4f1ea;
+    --paper-2: #ebe7dd;
+    --muted: #6b6b67;
+    --alarm: #c8170d;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .popup-shell .masthead {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 10px 16px; border-bottom: 1.5px solid var(--ink);
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .popup-shell .masthead .lede { font-weight: 700; }
+  .popup-shell .masthead .meta { color: var(--muted); display: flex; gap: 12px; }
+  .popup-shell .masthead .meta span::before { content: "● "; color: var(--ink); font-size: 6px; vertical-align: middle; }
+  .popup-shell .main { padding: 18px 16px 12px; }
+  .popup-shell .wordmark {
+    font-weight: 800; font-size: 44px; line-height: 0.92;
+    letter-spacing: -0.04em; margin: 0 0 14px; text-transform: lowercase;
+  }
+  .popup-shell .wordmark em { font-style: italic; font-weight: 400; }
+  .popup-shell .context {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px; border: 1.5px solid var(--ink);
+    margin-bottom: 14px; font-size: 11px; line-height: 1.35;
+    background: var(--ink); color: var(--paper);
+  }
+  .popup-shell .context .ctx-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--alarm);
+    flex-shrink: 0; box-shadow: 0 0 0 3px rgba(200,23,13,0.25);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(200,23,13,0); } }
+  .popup-shell .context b { font-weight: 700; }
+  .popup-shell .input-row {
+    border-top: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink);
+    padding: 12px 0 10px; margin-bottom: 14px;
+  }
+  .popup-shell .input-label {
+    font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 4px;
+  }
+  .popup-shell .input-label b { color: var(--ink); font-weight: 700; }
+  .popup-shell .input-wrap { display: flex; align-items: baseline; }
+  .popup-shell .dollar-sign { font-size: 44px; font-weight: 300; line-height: 1; opacity: 0.45; padding-right: 4px; color: var(--ink); }
+  .popup-shell #amount {
+    border: none; background: transparent; outline: none;
+    font-family: inherit; font-size: 54px; font-weight: 700;
+    letter-spacing: -0.04em; line-height: 1; width: 100%; min-width: 0;
+    color: var(--ink); caret-color: var(--alarm); padding: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .popup-shell #amount::placeholder { color: var(--ink); opacity: 0.14; font-weight: 300; }
+  .popup-shell .results { border-top: 1px solid var(--ink); }
+  .popup-shell .row {
+    display: grid; grid-template-columns: 1fr auto; align-items: center;
+    gap: 12px; padding: 11px 2px; border-bottom: 1px solid var(--ink);
+  }
+  .popup-shell .row:last-child { border-bottom: none; }
+  .popup-shell .yr-label {
+    display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto;
+    column-gap: 8px; align-items: baseline;
+  }
+  .popup-shell .yr-label .n {
+    grid-row: 1 / span 2; align-self: center;
+    font-size: 10px; font-weight: 500; letter-spacing: 0.12em; color: var(--muted);
+  }
+  .popup-shell .yr-label .n::before { content: "Fig. "; }
+  .popup-shell .yr-label .yr {
+    font-size: 12px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .popup-shell .yr-label .aside { font-size: 10.5px; font-style: italic; color: var(--muted); font-weight: 400; }
+  .popup-shell .fv {
+    font-size: 22px; font-weight: 700; letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+    transition: opacity 160ms ease;
+  }
+  .popup-shell .fv .cents { font-size: 0.55em; font-weight: 500; color: var(--muted); padding-left: 1px; }
+  .popup-shell .fv.empty { opacity: 0.18; font-weight: 300; }
+  .popup-shell .row.alarming {
+    background: var(--alarm); color: var(--paper);
+    margin: 0 -16px; padding: 14px 16px 14px;
+    border-bottom: none; border-top: 1.5px solid var(--ink);
+  }
+  .popup-shell .row.alarming .yr-label .n,
+  .popup-shell .row.alarming .yr-label .aside { color: rgba(244,241,234,0.75); }
+  .popup-shell .row.alarming .yr-label .yr { color: var(--paper); }
+  .popup-shell .row.alarming .fv { color: var(--paper); font-size: 26px; }
+  .popup-shell .row.alarming .fv .cents { color: rgba(244,241,234,0.7); }
+  .popup-shell .row.alarming .fv.empty { color: var(--paper); opacity: 0.35; }
+  @keyframes dbjFlash { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+  .popup-shell .results.updated .fv:not(.empty) { animation: dbjFlash 200ms ease; }
+  .popup-shell .foot {
+    display: flex; justify-content: space-between;
+    padding: 10px 0 2px; margin-top: 10px; border-top: 1.5px solid var(--ink);
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+  }
+  .popup-shell .foot b { color: var(--ink); font-weight: 700; border: 1px solid var(--ink); padding: 1px 5px; }
+
+  /* ===== docs column ===== */
+  .docs { max-width: 640px; }
+  h1.page-title { font-size: 44px; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 8px; line-height: 0.95; }
+  h1.page-title em { font-style: italic; font-weight: 400; }
+  .sub { color: #aeaaa0; font-size: 14px; margin: 0 0 28px; line-height: 1.5; max-width: 46ch; }
+  h2 { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #8a857a; margin: 28px 0 10px; font-weight: 600; }
+  ol.steps { margin: 0; padding: 0; list-style: none; counter-reset: s; }
+  ol.steps li {
+    counter-increment: s; display: grid; grid-template-columns: 28px 1fr;
+    gap: 10px; padding: 10px 0; border-bottom: 1px solid #3a3a36;
+    font-size: 14px; line-height: 1.5;
+  }
+  ol.steps li::before {
+    content: counter(s, decimal-leading-zero);
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #c8170d; padding-top: 3px;
+  }
+  ol.steps code { background: #1f1f1d; padding: 1px 6px; font-size: 12px; font-family: "SF Mono", Menlo, monospace; color: #ebe7dd; border: 1px solid #3a3a36; }
+  .files { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 13px; line-height: 1.6; }
+  .files code { font-family: "SF Mono", Menlo, monospace; color: #f4f1ea; font-size: 12px; }
+  .files span { color: #aeaaa0; }
+  .pill { display: inline-block; padding: 2px 8px; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; border: 1px solid #c8170d; color: #c8170d; border-radius: 999px; margin-right: 6px; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="frame-col">
+      <div class="browser-bar">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="title">popup · 360px</div>
+      </div>
+
+      <!-- Inlined popup (same markup as extension/popup.html, scoped to .popup-shell) -->
+      <div class="popup-shell">
+        <header class="masthead">
+          <div class="lede">DON'T BUY THE JEANS</div>
+          <div class="meta">
+            <span id="today">—</span>
+            <span>7.00% p.a.</span>
+          </div>
+        </header>
+        <div class="main">
+          <h1 class="wordmark">don't<br/>buy the<br/><em>jeans</em><span class="period">.</span></h1>
+
+          <div class="context" id="contextRow">
+            <span class="ctx-dot"></span>
+            <span class="ctx-text">You are on <b id="ctxHost">amazon.com</b>. We noticed.</span>
+          </div>
+
+          <section class="input-row">
+            <div class="input-label">The thing costs&nbsp;<b>→</b></div>
+            <div class="input-wrap">
+              <span class="dollar-sign">$</span>
+              <input id="amount" type="text" inputmode="decimal" autocomplete="off"
+                     spellcheck="false" placeholder="128" aria-label="Cost in dollars" />
+            </div>
+          </section>
+
+          <section class="results" id="results">
+            <div class="row" data-years="1">
+              <div class="yr-label">
+                <span class="n">01</span>
+                <span class="yr">In 1 year.</span>
+                <span class="aside">Barely worth mentioning.</span>
+              </div>
+              <div class="fv empty" data-fv>$—</div>
+            </div>
+            <div class="row" data-years="5">
+              <div class="yr-label">
+                <span class="n">02</span>
+                <span class="yr">In 5 years.</span>
+                <span class="aside">One economic cycle.</span>
+              </div>
+              <div class="fv empty" data-fv>$—</div>
+            </div>
+            <div class="row" data-years="10">
+              <div class="yr-label">
+                <span class="n">03</span>
+                <span class="yr">In 10 years.</span>
+                <span class="aside">Roughly a doubling.</span>
+              </div>
+              <div class="fv empty" data-fv>$—</div>
+            </div>
+            <div class="row alarming" data-years="30">
+              <div class="yr-label">
+                <span class="n">04</span>
+                <span class="yr">In 30 years, just saying.</span>
+                <span class="aside">This is the one.</span>
+              </div>
+              <div class="fv empty" data-fv>$—</div>
+            </div>
+          </section>
+
+          <footer class="foot">
+            <span>S&amp;P 500 real return · 7%</span>
+            <span><b>esc</b> resets</span>
+          </footer>
+        </div>
+      </div>
+
+      <div class="caption">Live popup · type in the field</div>
+    </div>
+
+    <div class="docs">
+      <h1 class="page-title">don't buy<br/>the <em>jeans</em>.</h1>
+      <p class="sub">A Chrome extension. One input. Four uncomfortable numbers. A red exclamation point that appears when you navigate to a shopping site — as if your browser is disappointed in you.</p>
+
+      <span class="pill">Manifest v3</span>
+      <span class="pill">No network</span>
+      <span class="pill">No tracking</span>
+
+      <h2>How to install</h2>
+      <ol class="steps">
+        <li>Open <code>chrome://extensions</code> in Chrome.</li>
+        <li>Toggle <b>Developer mode</b> (top-right).</li>
+        <li>Click <b>Load unpacked</b>.</li>
+        <li>Select the <code>extension/</code> folder from this project.</li>
+        <li>Pin the icon from the puzzle-piece menu in your toolbar.</li>
+        <li>Click the icon. Type a number. Suffer.</li>
+      </ol>
+
+      <h2>Files</h2>
+      <div class="files">
+        <code>manifest.json</code><span>MV3 manifest · permissions · popup wiring</span>
+        <code>popup.html</code><span>Markup — wordmark, input, four horizon rows</span>
+        <code>popup.css</code><span>Editorial brutalist styles, 360px fixed width</span>
+        <code>popup.js</code><span>Live calc (7% compounding), input formatting, storage, host detection</span>
+        <code>background.js</code><span>Service worker — paints the red <b>!</b> badge when you land on a shopping domain</span>
+        <code>icons/</code><span>16/32/48/128 PNGs</span>
+        <code>README.md</code><span>Install steps, detection list</span>
+      </div>
+
+      <h2>Shopping-site detection</h2>
+      <p class="sub">The icon shows a red <b style="color:#c8170d">!</b> when the active tab is on one of: amazon, zara, asos, nike, uniqlo, h&amp;m, ebay, etsy, target, walmart, bestbuy, nordstrom, farfetch, ssense, revolve, aritzia, sephora, shopify-hosted stores, and <code style="background:#1f1f1d;padding:1px 5px;font-family:Menlo,monospace;font-size:11px;">shop.*</code> subdomains. Open the popup on one of those tabs and a small inverted strip names the site back at you.</p>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const RATE = 0.07;
+  const input = document.getElementById('amount');
+  const rows = [...document.querySelectorAll('.row[data-years]')];
+  const resultsEl = document.getElementById('results');
+
+  const now = new Date();
+  document.getElementById('today').textContent = now.toLocaleDateString('en-US', {
+    month: 'short', day: '2-digit', year: 'numeric'
+  }).toUpperCase();
+
+  const usdSplit = (n) => {
+    if (!isFinite(n)) return { whole: '$—', cents: '' };
+    const rounded = Math.round(n * 100) / 100;
+    const abs = Math.abs(rounded);
+    const whole = Math.trunc(abs);
+    const cents = Math.round((abs - whole) * 100).toString().padStart(2, '0');
+    return {
+      whole: (rounded < 0 ? '-' : '') + '$' + whole.toLocaleString('en-US'),
+      cents: '.' + cents
+    };
+  };
+  const parseAmount = (raw) => {
+    if (!raw) return NaN;
+    const c = String(raw).replace(/[^0-9.]/g, '');
+    if (!c || c === '.') return NaN;
+    const n = parseFloat(c);
+    return isFinite(n) ? n : NaN;
+  };
+  const fv = (p, y) => p * Math.pow(1 + RATE, y);
+
+  function render(principal) {
+    const valid = isFinite(principal) && principal > 0;
+    rows.forEach((row) => {
+      const y = parseInt(row.dataset.years, 10);
+      const el = row.querySelector('[data-fv]');
+      if (!valid) { el.innerHTML = '$—'; el.classList.add('empty'); return; }
+      const { whole, cents } = usdSplit(fv(principal, y));
+      el.innerHTML = whole + '<span class="cents">' + cents + '</span>';
+      el.classList.remove('empty');
+    });
+    resultsEl.classList.remove('updated');
+    void resultsEl.offsetWidth;
+    if (valid) resultsEl.classList.add('updated');
+  }
+
+  function formatInputValue(el) {
+    const raw = el.value;
+    const caret = el.selectionStart;
+    const before = raw.slice(0, caret).replace(/[^0-9.]/g, '').length;
+    let cleaned = raw.replace(/[^0-9.]/g, '');
+    const firstDot = cleaned.indexOf('.');
+    if (firstDot !== -1) {
+      cleaned = cleaned.slice(0, firstDot + 1) + cleaned.slice(firstDot + 1).replace(/\./g, '');
+      const [ip, dp] = cleaned.split('.');
+      cleaned = ip + '.' + (dp || '').slice(0, 2);
+    }
+    let [intPart, decPart] = cleaned.split('.');
+    if (intPart && intPart.length > 1) intPart = intPart.replace(/^0+/, '') || '0';
+    let formatted = '';
+    if (intPart) formatted = Number(intPart).toLocaleString('en-US');
+    if (cleaned.includes('.')) formatted += '.' + (decPart || '');
+    el.value = formatted;
+    let digitsSeen = 0;
+    let newCaret = formatted.length;
+    for (let i = 0; i < formatted.length; i++) {
+      if (/[0-9.]/.test(formatted[i])) digitsSeen++;
+      if (digitsSeen >= before) { newCaret = i + 1; break; }
+    }
+    try { el.setSelectionRange(newCaret, newCaret); } catch (e) {}
+  }
+
+  input.addEventListener('input', () => {
+    formatInputValue(input);
+    render(parseAmount(input.value));
+    try { localStorage.setItem('dbj_preview_amount', input.value); } catch(e){}
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { input.value = ''; render(NaN); try { localStorage.removeItem('dbj_preview_amount'); } catch(e){} input.focus(); }
+  });
+
+  // Prefill with a dramatic default so the preview lands with numbers already on screen
+  let saved = '';
+  try { saved = localStorage.getItem('dbj_preview_amount') || ''; } catch(e){}
+  input.value = saved || '248';
+  formatInputValue(input);
+  render(parseAmount(input.value));
+})();
+</script>
+</body>
+</html>
